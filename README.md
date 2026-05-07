@@ -32,7 +32,7 @@ each phase, so a crashed run can be resumed with `mimocast recover
 ## Quickstart
 
 ```bash
-git clone https://github.com/<you>/mimocast.git
+git clone https://github.com/nmecx/mimocast.git
 cd mimocast
 python -m pip install -e ".[dev]"
 

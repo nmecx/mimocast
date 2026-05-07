@@ -2,7 +2,7 @@
 
 Form: <https://100t.xiaomimimo.com/>
 Project: `mimocast`
-Repo: `https://github.com/<you>/mimocast`
+Repo: `https://github.com/nmecx/mimocast`
 
 ---
 
@@ -37,55 +37,48 @@ Repo: `https://github.com/<you>/mimocast`
 
 ## 04 · Describe what you've built
 
-Paste-ready (≈1 700 chars, fits the 2 000-char limit):
+Form constraint: **≤1 200 chars**, ≥100 words. Both drafts below pass.
+
+### A. ASCII-safe (1 196 chars / 1 196 UTF-8 bytes — recommended; works whether the form counts chars or bytes)
 
 ```
-Project: mimocast — turn any document into a narrated MP4 video deck
-         using all three model classes in the MiMo V2.5 family.
-Repo:    https://github.com/<you>/mimocast
-Stack:   Python 3.11, openai-py (against MiMo's OpenAI-compatible API),
-         pydantic v2, typer, rich, pypdf, Pillow, tenacity, ffmpeg.
+Project: mimocast -- github.com/nmecx/mimocast (MIT)
 
-Core problem
-  Producing a narrated explainer video from a paper, blog post or PDF
-  used to require stitching three vendors (LLM + image-gen + TTS)
-  together with three auth flows, three rate-limit pools, and three
-  billing dashboards. MiMo V2.5 ships reasoner, multimodal vision, and
-  TTS behind one OpenAI-compatible endpoint. mimocast is a four-agent
-  Python orchestrator that turns that single integration into an
-  end-to-end content workflow.
+Problem: Producing a narrated explainer video from a paper or PDF used to mean stitching three vendors (LLM + image-gen + TTS) with three auth flows, rate-limit pools, dashboards. MiMo V2.5 ships reasoner, multimodal vision, and TTS behind one OpenAI-compatible endpoint -- mimocast turns that into one recoverable agent workflow.
 
-Crew / agent flow
-  1. Reader      — ingests PDF / URL / Markdown, extracts plain text,
-                   auto-detects language (zh/ja/ko/ar fallback en).
-  2. Summarizer  — calls MiMo reasoner with a strict JSON schema to
-                   produce a 3–8 section outline. Malformed JSON
-                   triggers a temperature-0 repair pass instead of
-                   failing the run.
-  3. Designer    — asks MiMo multimodal for an editorial image prompt
-                   per slide, then renders the actual slide PNG with
-                   PIL (deterministic, testable, swappable for a real
-                   image-gen endpoint later).
-  4. Narrator    — sends each section's speaker_notes to MiMo TTS,
-                   writes per-slide MP3s; mock mode emits length-correct
-                   silent WAVs so Composer timing stays accurate.
-  5. Composer    — ffmpeg builds one segment per slide and concatenates
-                   them into deck.mp4.
+Logic flow -- 5-phase multi-agent crew under a single orchestrator:
 
-Recoverability
-  After every phase the Orchestrator persists RunState to
-  ~/.mimocast/<run_id>.json. `mimocast recover <run_id>` resumes from
-  the saved phase, so a network blip or an OOM kill never re-pays for
-  tokens already spent. tenacity guards every API call with exponential
-  backoff (≤3 tries).
+1. Reader: PDF/URL/Markdown -> text; detects zh/ja/ko/ar.
+2. Summarizer: MiMo reasoner + strict JSON-schema decoding produces a 3-8 section outline; malformed JSON triggers a temperature-0 repair pass instead of crashing.
+3. Designer: MiMo multimodal generates editorial prompts; renders 1920x1080 slides.
+4. Narrator: MiMo TTS voices each section's speaker_notes per slide.
+5. Composer: ffmpeg stitches segments into deck.mp4.
 
-Why MiMo V2.5 specifically
-  - One OpenAI-compatible base URL covers reasoner + vision + TTS.
-  - Strict JSON-schema decoding eliminates the fragile parse layer.
-  - Multilingual reasoning means the Indonesian / Chinese / Arabic
-    sources we tested produce in-language speaker notes without drift.
-  - Token Plan pricing makes long-form deck production economic.
+After every phase RunState persists to ~/.mimocast/<run_id>.json; `mimocast recover <run_id>` resumes from the last good phase, so a crash never re-pays for tokens already spent. tenacity guards every call (<=3 retries, exp backoff). Pydantic v2 enforces typed cross-phase contracts. 14 pytest cases, ruff clean.
 ```
+
+### B. Typographic (1 199 chars / 1 212 UTF-8 bytes — only safe if the form counts chars/codepoints, not bytes)
+
+```
+Project: mimocast — github.com/nmecx/mimocast (MIT)
+
+Problem: Producing a narrated explainer video from a paper or PDF used to mean stitching three vendors (LLM + image-gen + TTS) with three auth flows, rate-limit pools, billing dashboards. MiMo V2.5 ships reasoner, multimodal vision, and TTS behind one OpenAI-compatible endpoint — mimocast turns that into one recoverable agent workflow.
+
+Logic flow — 5-phase multi-agent crew under a single orchestrator:
+
+1. Reader: PDF/URL/Markdown → text; detects zh/ja/ko/ar.
+2. Summarizer: MiMo reasoner + strict JSON-schema decoding produces a 3–8 section outline; malformed JSON triggers a temperature-0 repair pass instead of crashing.
+3. Designer: MiMo multimodal generates editorial prompts; renders 1920×1080 slides.
+4. Narrator: MiMo TTS voices each section's speaker_notes per slide.
+5. Composer: ffmpeg stitches segments into deck.mp4.
+
+After every phase RunState persists to ~/.mimocast/<run_id>.json; `mimocast recover <run_id>` resumes from the last good phase, so a crash never re-pays for tokens already spent. tenacity guards every call (≤3 retries, exp backoff). Pydantic v2 enforces typed cross-phase contracts. 14 pytest cases, ruff clean.
+```
+
+> **Why both?** Most web forms count `string.length` (UTF-16 code units),
+> in which case both drafts fit. A few forms count UTF-8 bytes — in
+> which case **only Draft A** fits. Paste A first; only switch to B if
+> the form's counter shows ≥1 200 with A (it shouldn't).
 
 ---
 
@@ -154,7 +147,7 @@ A small spreadsheet:
 ## 06 · GitHub project link or live demo URL
 
 ```
-https://github.com/<you>/mimocast
+https://github.com/nmecx/mimocast
 ```
 
 * Pin the repo on your profile.
